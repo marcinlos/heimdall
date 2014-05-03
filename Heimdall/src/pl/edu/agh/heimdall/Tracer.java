@@ -3,55 +3,47 @@ package pl.edu.agh.heimdall;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 
+import pl.edu.agh.heimdall.consumer.EventSink;
+import pl.edu.agh.heimdall.events.Call;
+import pl.edu.agh.heimdall.events.Catch;
+import pl.edu.agh.heimdall.events.Event;
+import pl.edu.agh.heimdall.events.Return;
+import pl.edu.agh.heimdall.events.Throw;
+
 public class Tracer {
 
-    private int depth = 0;
-    private boolean stackUnwinding = false;
-    
     private final String thread;
+    private final EventSink sink;
     
-    public Tracer() {
+    public Tracer(EventSink sink) {
+        this.sink = sink;
         this.thread = Thread.currentThread().getName();
     }
     
-    private static String indent(int n) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < n; ++ i) {
-            sb.append("  ");
-        }
-        return sb.toString();
-    }
-    
-    private void out(String msg, Object... params) {
-        String tid = "[" + thread + "] ";
-        String fullMessage = String.format(msg, params);
-        System.out.println(tid + indent(depth) + fullMessage);
-    }
-
     public void beginCall(JoinPoint point) {
         Signature signature = point.getSignature();
-        String method = signature.toLongString();
-        out("Call: %s", method);
-        ++depth;
+        
+        String method = signature.toString();
+        Object target = point.getTarget();
+        String type = signature.getDeclaringTypeName();
+        
+        Event event = new Call(thread, type, method, target, point.getArgs());
+        sink.push(event);
     }
 
     public void callReturns(Object value) {
-        --depth;
-        out("returned %s", value);
+        Event event = new Return(thread, value);
+        sink.push(event);
     }
     
     public void callThrows(Throwable e) {
-        --depth;
-        if (! stackUnwinding) {
-            stackUnwinding = true;
-            out("Exception: " + e.getMessage());
-        } else {
-            out("<unwinding...>");
-        }
+        Event event = new Throw(thread, e);
+        sink.push(event);
     }
     
     public void exceptionCatched(JoinPoint point, Throwable e) {
-        out("Exception catched");
+        Event event = new Catch(thread);
+        sink.push(event);
     }
 
 }

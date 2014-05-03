@@ -8,8 +8,9 @@ public privileged aspect Monitor {
     
     private pointcut affected(): monitored() && !internals();
     
+    
     private Tracer tracer() {
-        return Tracing.getTracer();
+        return Heimdall.getTracer();
     }
     
     Object around() : affected() {
