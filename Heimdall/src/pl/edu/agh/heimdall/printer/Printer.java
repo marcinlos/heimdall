@@ -3,26 +3,23 @@ package pl.edu.agh.heimdall.printer;
 import java.util.HashMap;
 import java.util.Map;
 
-import pl.edu.agh.heimdall.consumer.DispatcherEventSink;
-import pl.edu.agh.heimdall.consumer.EventConsumer;
 import pl.edu.agh.heimdall.consumer.EventSink;
-import pl.edu.agh.heimdall.consumer.QueueSinkConsumer;
+import pl.edu.agh.heimdall.consumer.QueueConsumer;
+import pl.edu.agh.heimdall.consumer.QueueEventSink;
 import pl.edu.agh.heimdall.events.Event;
 
-public class PrinterConsumer extends QueueSinkConsumer {
+public class Printer extends QueueConsumer {
     
     private final Map<String, EventSink> sinks = new HashMap<>();
     
-    
-    public PrinterConsumer(int queueSize, int bufferSize, int delay) {
-        super(queueSize, bufferSize, delay);
+    public Printer(QueueEventSink queue, int bufferSize, int delay) {
+        super(queue, bufferSize, delay);
     }
     
     public EventSink getSink(String thread) {
         EventSink sink = sinks.get(thread);
         if (sink == null) {
-            EventConsumer consumer = new ThreadEventPrinter(thread);
-            sink = new DispatcherEventSink(consumer);
+            sink = new StdoutPrinter(thread);
             sinks.put(thread, sink);
         }
         return sink;

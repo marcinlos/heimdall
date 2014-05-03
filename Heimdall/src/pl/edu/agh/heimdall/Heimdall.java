@@ -1,25 +1,36 @@
 package pl.edu.agh.heimdall;
 
-import pl.edu.agh.heimdall.consumer.EventSink;
-import pl.edu.agh.heimdall.printer.PrinterConsumer;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
+import pl.edu.agh.heimdall.consumer.EventSink;
+import pl.edu.agh.heimdall.consumer.QueueEventSink;
+import pl.edu.agh.heimdall.printer.Printer;
+
+/**
+ * Entry point, handles configuration management and creates the main 
+ * {@link EventSink} and {@link Tracer} object.
+ * 
+ * @author los
+ */
 public class Heimdall {
     
-    static {
-        consumer = new PrinterConsumer(1000, 100, 100);
-    }
+    private static final EventSink sink;
+    private static final Tracer tracer;
     
-    private static final EventSink consumer;
-
-    private static final ThreadLocal<Tracer> tracers = new ThreadLocal<Tracer>() {
-        @Override
-        protected Tracer initialValue() {
-            return new Tracer(consumer);
-        }
-    };
+    private static final Executor executor = Executors.newSingleThreadExecutor();
+    
+    static {
+        QueueEventSink queue = new QueueEventSink(1000);
+        
+        sink = queue;
+        tracer = new Tracer(sink);
+        
+        executor.execute(new Printer(queue, 100, 100));
+    }
 
     public static Tracer getTracer() {
-        return tracers.get();
+        return tracer;
     }
 
 }

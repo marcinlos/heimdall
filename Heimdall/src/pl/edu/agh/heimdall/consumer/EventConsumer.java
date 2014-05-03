@@ -5,6 +5,11 @@ import pl.edu.agh.heimdall.events.Catch;
 import pl.edu.agh.heimdall.events.Return;
 import pl.edu.agh.heimdall.events.Throw;
 
+/**
+ * High-level interface for receiving and handling tracing events.
+ * 
+ * @author los
+ */
 public interface EventConsumer {
     
     void called(Call callInfo);

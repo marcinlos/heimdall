@@ -1,5 +1,8 @@
 package pl.edu.agh.heimdall.events;
 
+import pl.edu.agh.heimdall.consumer.EventConsumer;
+
+
 public class Call extends Event {
 
     public final String type;
@@ -14,6 +17,11 @@ public class Call extends Event {
         this.method = method;
         this.target = target;
         this.args = args;
+    }
+
+    @Override
+    public void dispatch(EventConsumer consumer) {
+        consumer.called(this);
     }
 
 }

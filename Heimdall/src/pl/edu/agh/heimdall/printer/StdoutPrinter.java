@@ -1,18 +1,20 @@
 package pl.edu.agh.heimdall.printer;
 
 import pl.edu.agh.heimdall.consumer.EventConsumer;
+import pl.edu.agh.heimdall.consumer.EventSink;
 import pl.edu.agh.heimdall.events.Call;
 import pl.edu.agh.heimdall.events.Catch;
+import pl.edu.agh.heimdall.events.Event;
 import pl.edu.agh.heimdall.events.Return;
 import pl.edu.agh.heimdall.events.Throw;
 
-public class ThreadEventPrinter implements EventConsumer {
+class StdoutPrinter implements EventConsumer, EventSink {
     
     private int depth = 0;
     private boolean stackUnwinding = false;
     private final String thread;
 
-    public ThreadEventPrinter(String thread) {
+    public StdoutPrinter(String thread) {
         this.thread = thread;
     }
     
@@ -56,6 +58,11 @@ public class ThreadEventPrinter implements EventConsumer {
             sb.append("  ");
         }
         return sb.toString();
+    }
+
+    @Override
+    public void push(Event e) {
+        e.dispatch(this);
     }
 
 }
