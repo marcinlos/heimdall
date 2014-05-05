@@ -1,4 +1,4 @@
-package pl.edu.agh.heimdall.printer;
+package pl.edu.agh.heimdall.output;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +16,7 @@ public class Printer extends QueueConsumer {
         super(queue, bufferSize, delay);
     }
     
-    public EventSink getSink(String thread) {
+    private EventSink getSink(String thread) {
         EventSink sink = sinks.get(thread);
         if (sink == null) {
             sink = new StdoutPrinter(thread);

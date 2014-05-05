@@ -8,7 +8,6 @@ public class AttackResult {
     public AttackResult(Outcome outcome, int value) {
         this.outcome = outcome;
         this.value = value;
-        throw new RuntimeException();
     }
 
     public Outcome getOutcome() {

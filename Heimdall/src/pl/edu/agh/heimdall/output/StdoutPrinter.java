@@ -1,4 +1,4 @@
-package pl.edu.agh.heimdall.printer;
+package pl.edu.agh.heimdall.output;
 
 import pl.edu.agh.heimdall.consumer.EventConsumer;
 import pl.edu.agh.heimdall.consumer.EventSink;
@@ -8,7 +8,7 @@ import pl.edu.agh.heimdall.events.Event;
 import pl.edu.agh.heimdall.events.Return;
 import pl.edu.agh.heimdall.events.Throw;
 
-class StdoutPrinter implements EventConsumer, EventSink {
+public class StdoutPrinter implements EventConsumer, EventSink {
     
     private int depth = 0;
     private boolean stackUnwinding = false;

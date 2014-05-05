@@ -5,7 +5,8 @@ import java.util.concurrent.Executors;
 
 import pl.edu.agh.heimdall.consumer.EventSink;
 import pl.edu.agh.heimdall.consumer.QueueEventSink;
-import pl.edu.agh.heimdall.printer.Printer;
+import pl.edu.agh.heimdall.output.Printer;
+import pl.edu.agh.heimdall.output.SocketOutput;
 
 /**
  * Entry point, handles configuration management and creates the main 
@@ -26,7 +27,8 @@ public class Heimdall {
         sink = queue;
         tracer = new Tracer(sink);
         
-        executor.execute(new Printer(queue, 100, 100));
+//        executor.execute(new Printer(queue, 100, 100));
+        executor.execute(new SocketOutput(queue, 100, 100, "localhost", 2000));
     }
 
     public static Tracer getTracer() {
