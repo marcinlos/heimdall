@@ -11,22 +11,8 @@ import pl.edu.agh.heimdall.consumer.EventSink
 import pl.edu.agh.heimdall.events.Event
 
 
-class Printer extends EventSink {
-  
-  private val printers = Map[String, EventConsumer]()
-  
-  def getPrinter(thread: String): EventConsumer =
-    printers.get(thread) match {
-      case Some(printer) => printer
-      case None =>
-        val printer = new StdoutPrinter(thread)
-        printers(thread) = printer
-        printer
-    }
-    
-  override def push(event: Event) {
-    val thread = event.thread
-    event.dispatch(getPrinter(thread))
-  }
+class Printer extends MultiplexingSink[StdoutPrinter] {
+
+  def newSink(thread: String): StdoutPrinter = new StdoutPrinter(thread)
   
 }
