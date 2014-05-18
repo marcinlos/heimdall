@@ -9,6 +9,8 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import pl.edu.agh.heimdall.annotations.Trace;
+
 import com.google.common.eventbus.Subscribe;
 
 import rangarok.entities.Creature;
@@ -28,6 +30,7 @@ public class BattleWindow extends JPanel {
 
     private final Random rand = new Random();
     private final GameServer server;
+    
     private final Battle battle;
  
     private final javax.swing.Action doSth = new AbstractAction("Do something") {
@@ -37,13 +40,16 @@ public class BattleWindow extends JPanel {
         }
     };
     
+    @Trace
+	private JButton button;
+    
     public BattleWindow(GameServer server, Battle battle) {
         this.server = server;
         this.battle = battle;
         
         battle.getEventBus().register(this);
         
-        JButton button = new JButton(doSth);
+        button = new JButton(doSth);
         add(button);
     }
     

@@ -10,6 +10,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JTabbedPane;
 
+import pl.edu.agh.heimdall.annotations.Trace;
 import rangarok.ai.AbstractBot;
 import rangarok.ai.Bot;
 import rangarok.mechanics.Battle;
@@ -20,6 +21,7 @@ public class MainWindow extends JFrame {
     
     private final GameServer server;
     private JTabbedPane battleTabs;
+    @Trace
     private JMenuBar menuBar;
     private final BattleFactory factory = new DemoBattleFactory();
     

@@ -8,7 +8,7 @@
         "execution(* *(..)) || execution(*.new(..))" 
       />
     
-      <pointcut name="monitored" expression="pkg()  AND allMethods()" />
+      <pointcut name="monitored" expression="pkg() AND allMethods()" />
       <pointcut name="tracedCatch" expression="pkg()" />
     </concrete-aspect>
   </aspects>
