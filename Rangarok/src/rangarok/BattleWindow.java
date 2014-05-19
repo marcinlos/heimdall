@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import pl.edu.agh.heimdall.annotations.Marked;
 import pl.edu.agh.heimdall.annotations.Trace;
 
 import com.google.common.eventbus.Subscribe;
@@ -26,6 +27,7 @@ import rangarok.server.FightAction;
 import rangarok.server.GameServer;
 import rangarok.server.Request;
 
+@Marked
 public class BattleWindow extends JPanel {
 
     private final Random rand = new Random();
