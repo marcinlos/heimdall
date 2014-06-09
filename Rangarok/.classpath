@@ -5,5 +5,11 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/guava-17.0.jar"/>
 	<classpathentry kind="lib" path="/Heimdall/heimdall.jar"/>
+	<classpathentry kind="lib" path="lib/guice-3.0.jar"/>
+	<classpathentry kind="lib" path="lib/guice-assistedinject-3.0.jar"/>
+	<classpathentry kind="lib" path="lib/guice-multibindings-3.0.jar"/>
+	<classpathentry kind="lib" path="lib/guice-throwingproviders-3.0.jar"/>
+	<classpathentry kind="lib" path="lib/javax.inject.jar"/>
+	<classpathentry kind="lib" path="lib/aopalliance.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
