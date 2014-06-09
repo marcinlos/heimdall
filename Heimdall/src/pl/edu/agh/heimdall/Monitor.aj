@@ -3,20 +3,9 @@ package pl.edu.agh.heimdall;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JComponent;
-import javax.swing.BorderFactory;
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
-
-import pl.edu.agh.heimdall.annotations.*;
 
 public abstract privileged aspect Monitor {
 
@@ -28,15 +17,14 @@ public abstract privileged aspect Monitor {
 
 	private pointcut affected(): monitored() && !internals();
 
-	private pointcut setters(JComponent comp): set(@Trace * *) && args(comp);
+	//private pointcut setters(JComponent comp): set(@Trace * *) && args(comp);
 
-	private pointcut marked(Object args, JComponent comp): @this(Marked) && this(comp) && args(args) && execution(public * *(..));
 
 	/*
 	 * Object around() : affected() { tracer().beginCall(thisJoinPoint); Object
 	 * value = proceed(); tracer().callReturns(value); return value; }
 	 */
-
+/*
 	Object around(final JComponent comp, final Object args): marked(args, comp){
 		//final Color oldColor = comp.getBackground();
 		final Border border = comp.getBorder();
@@ -84,7 +72,8 @@ public abstract privileged aspect Monitor {
 		//comp.setBackground(oldColor);
 		return value;
 	}
-
+*/
+	/*
 	after(final JComponent component): setters(component){
 		System.out.println("Here!");
 		if (component != null) {
@@ -134,27 +123,27 @@ public abstract privileged aspect Monitor {
 			});
 		}
 	}
-
-	private void blink(final JComponent component, final Color blinkColor) {
-		final Color oldColor = component.getBackground();
-		final Timer timer = new Timer(75, null);
-		timer.addActionListener(new ActionListener() {
-			private int times = 0;
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				component.setBackground(times % 2 == 0 ? blinkColor : oldColor);
-				if (times == 3) {
-					timer.stop();
-				}
-				++times;
-
-			}
-		});
-		timer.setRepeats(true);
-		timer.start();
-	}
-
+*/
+//	private void blink(final JComponent component, final Color blinkColor) {
+//		final Color oldColor = component.getBackground();
+//		final Timer timer = new Timer(75, null);
+//		timer.addActionListener(new ActionListener() {
+//			private int times = 0;
+//
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				component.setBackground(times % 2 == 0 ? blinkColor : oldColor);
+//				if (times == 3) {
+//					timer.stop();
+//				}
+//				++times;
+//
+//			}
+//		});
+//		timer.setRepeats(true);
+//		timer.start();
+//	}
+/*
 	after() throwing (Exception e): affected() {
 		tracer().callThrows(e);
 	}
@@ -174,5 +163,5 @@ public abstract privileged aspect Monitor {
 	before(Throwable e): tracedCatch() && handler(Throwable+) && args(e) {
 		tracer().exceptionCatched(thisJoinPoint, e);
 	}
-
+*/
 }
