@@ -4,6 +4,8 @@ import java.util.LinkedList;
 
 import javax.inject.Inject;
 
+import org.aspectj.lang.JoinPoint;
+
 import com.google.inject.Guice;
 
 
@@ -12,10 +14,11 @@ public abstract privileged aspect Catcher {
 	@Inject
 	private LinkedList<DiscovererResolverPair> violationPairs;
 	
+	@Inject
+	private Statistics statistics;
+	
 	public Catcher() {
-		System.out.println("Constructing");
 		Guice.createInjector(new CatcherModule()).injectMembers(this);
-		System.out.println("After Constructing");
 	}
 
 	private pointcut internals(): within(pl.edu.agh.heimdall..*);
@@ -28,9 +31,10 @@ public abstract privileged aspect Catcher {
 
 	before(): affectedMethods(){
 		for(DiscovererResolverPair violationPair: violationPairs){
-			if(violationPair.getDiscoverer().validate(thisJoinPoint)){
+			if(violationPair.getDiscoverer().validate(thisJoinPoint, statistics)){
 				violationPair.getResolver().resolve(thisJoinPoint);
 			}
 		}
+		statistics.addInvocationOf(thisJoinPoint.getTarget(), thisJoinPoint.getSignature().getName());
 	}
 }

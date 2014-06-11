@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="/Rangarok/lib/guice-multibindings-3.0.jar"/>
 	<classpathentry kind="lib" path="/Rangarok/lib/guice-throwingproviders-3.0.jar"/>
 	<classpathentry kind="lib" path="/Rangarok/lib/javax.inject.jar"/>
+	<classpathentry kind="lib" path="lib/guava-17.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

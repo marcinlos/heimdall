@@ -4,7 +4,7 @@ package rangarok;
 public class Main {
 	public static void main(String[] args) {
 		new Main().test(new Object());
-		new Main().test(null);
+		new Main().test(new Object());
 		System.out.println("Ending...");
 	}
 	
