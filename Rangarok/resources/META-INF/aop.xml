@@ -12,6 +12,9 @@
     
       <pointcut name="monitored" expression="pkg()" />
       <pointcut name="monitoredMethodCalls" expression="call(* *(..)) AND !call(* java..*(..))" />
+      <pointcut name="monitoredGetFields" expression="get(* *)  AND !get(* java..*) AND !get(* javax..*)" />
+      
+      
       <!-- <pointcut name="tracedCatch" expression="pkg()" /> -->
     </concrete-aspect>
   </aspects>

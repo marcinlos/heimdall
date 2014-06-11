@@ -1,5 +1,6 @@
 package pl.edu.agh.heimdall;
 
+import java.lang.reflect.Field;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -13,6 +14,7 @@ import pl.edu.agh.heimdall.engine.SpyIntervention;
 import pl.edu.agh.heimdall.statistics.Statistics;
 
 import com.google.common.base.Optional;
+import com.google.common.reflect.Reflection;
 
 public abstract privileged aspect Catcher {
 
@@ -31,10 +33,32 @@ public abstract privileged aspect Catcher {
 	abstract pointcut monitored();
 
 	abstract pointcut monitoredMethodCalls();
+	
+	abstract pointcut monitoredGetFields();
 
 	private pointcut affected(): monitored() && !internals();
 
 	private pointcut affectedMethods(): affected() && monitoredMethodCalls();
+
+	private pointcut affectedGet(Object o): affected() && monitoredGetFields() && this(o);
+	
+	before(Object o): affectedGet(o){
+		System.out.println("This is: " + o);
+		
+		String fieldName = thisJoinPoint.getSignature().getName();
+		
+		System.out.println(fieldName);
+//		try {
+//			Field affectedField = o.getClass().getField(fieldName);
+//			affectedField.setAccessible(true);
+//			affectedField.set(o, "luuzik");
+//			affectedField.setAccessible(false);
+//		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		System.out.println("-----");
+	}
 
 	Object around(): affectedMethods(){
 		Object toReturn = null;
