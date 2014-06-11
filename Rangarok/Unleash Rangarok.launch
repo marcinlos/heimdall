@@ -15,5 +15,5 @@
 <booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="rangarok.Main"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="Rangarok"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-javaagent:${project_loc:Heimdall}/lib/aspectjweaver.jar"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Djava.system.class.loader=pl.edu.agh.heimdall.loader.HeimdallClassLoader -javaagent:${project_loc:Heimdall}/lib/aspectjweaver.jar"/>
 </launchConfiguration>

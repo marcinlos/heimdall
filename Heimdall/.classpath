@@ -5,5 +5,6 @@
 	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Rangarok"/>
 	<classpathentry exported="true" kind="lib" path="lib/balloontip-1.2.4.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/asm-all-5.0.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
