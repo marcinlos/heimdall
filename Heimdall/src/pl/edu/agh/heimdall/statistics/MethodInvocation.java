@@ -1,4 +1,4 @@
-package pl.edu.agh.heimdall;
+package pl.edu.agh.heimdall.statistics;
 
 import com.google.common.base.Preconditions;
 

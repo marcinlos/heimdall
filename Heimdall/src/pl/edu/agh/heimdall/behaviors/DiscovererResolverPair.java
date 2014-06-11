@@ -1,4 +1,4 @@
-package pl.edu.agh.heimdall;
+package pl.edu.agh.heimdall.behaviors;
 
 public class DiscovererResolverPair {
 	private ViolationResolver resolver;

@@ -1,4 +1,4 @@
-package pl.edu.agh.heimdall;
+package pl.edu.agh.heimdall.statistics;
 
 public interface Statistics {
 	boolean wasMethodOnObjectInvokedOnce(Object o, String methodName);
