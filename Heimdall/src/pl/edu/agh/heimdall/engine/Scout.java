@@ -1,4 +1,4 @@
-package pl.edu.agh.heimdall.behaviors;
+package pl.edu.agh.heimdall.engine;
 
 import org.aspectj.lang.JoinPoint;
 

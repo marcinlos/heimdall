@@ -6,9 +6,10 @@ import java.util.LinkedList;
 
 import javax.inject.Inject;
 
-import pl.edu.agh.heimdall.behaviors.Maneuver;
-import pl.edu.agh.heimdall.behaviors.Scout;
 import pl.edu.agh.heimdall.configuration.CatcherModule;
+import pl.edu.agh.heimdall.engine.Maneuver;
+import pl.edu.agh.heimdall.engine.Scout;
+import pl.edu.agh.heimdall.engine.SpyIntervention;
 import pl.edu.agh.heimdall.statistics.Statistics;
 
 import com.google.common.base.Optional;
@@ -29,9 +30,11 @@ public abstract privileged aspect Catcher {
 
 	abstract pointcut monitored();
 
+	abstract pointcut monitoredMethodCalls();
+
 	private pointcut affected(): monitored() && !internals();
 
-	private pointcut affectedMethods(): affected() && call(* *(..));
+	private pointcut affectedMethods(): affected() && monitoredMethodCalls();
 
 	Object around(): affectedMethods(){
 		Object toReturn = null;
@@ -44,16 +47,21 @@ public abstract privileged aspect Catcher {
 			}
 		}
 
-		boolean invokeOriginal = true;
+		Optional<SpyIntervention> neededSpyIntervention = Optional.absent();
+		// only the first spy intervention works - potentially dangerous
 		for (Maneuver maneuver : maneuvers) {
-			boolean isGoingToInvokeOriginal = maneuver
-					.preOperationPhase(thisJoinPoint);
-			invokeOriginal &= isGoingToInvokeOriginal;
+			if (!neededSpyIntervention.isPresent()) {
+				neededSpyIntervention = maneuver
+						.preOperationPhase(thisJoinPoint);
+			}
 		}
-		if (invokeOriginal) {
+		if (neededSpyIntervention.isPresent()) {
+			toReturn = neededSpyIntervention.get().impersonateEnemy(
+					thisJoinPoint.getTarget());
+		} else {
 			toReturn = proceed();
 		}
-		
+
 		while (!maneuvers.isEmpty()) {
 			Maneuver lastManeuver = maneuvers.pollLast();
 			lastManeuver.postOperationPhase(thisJoinPoint);

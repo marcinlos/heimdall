@@ -2,9 +2,9 @@ package pl.edu.agh.heimdall.configuration;
 
 import java.util.LinkedList;
 
-import pl.edu.agh.heimdall.behaviors.NotNullScout;
-import pl.edu.agh.heimdall.behaviors.OnlyOnceScout;
-import pl.edu.agh.heimdall.behaviors.Scout;
+import pl.edu.agh.heimdall.engine.NotNullScout;
+import pl.edu.agh.heimdall.engine.OnlyOnceScout;
+import pl.edu.agh.heimdall.engine.Scout;
 import pl.edu.agh.heimdall.statistics.InMemoryStatistics;
 import pl.edu.agh.heimdall.statistics.Statistics;
 
