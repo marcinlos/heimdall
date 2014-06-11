@@ -3,8 +3,9 @@ package rangarok;
 
 public class Main {
 	public static void main(String[] args) {
-		new Main().test(new Object());
-		new Main().test(new Object());
+		Main main = new Main();
+		main.test(new Object());
+		main.test(null);
 		System.out.println("Ending...");
 	}
 	

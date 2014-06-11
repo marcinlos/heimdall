@@ -1,16 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <aspectj>
   <aspects>
-    <concrete-aspect name="Concrete" extends="pl.edu.agh.heimdall.Monitor">
-      
-      <pointcut name="pkg" expression="within(rangarok..*)" />
-      <pointcut name="allMethods" expression=
-        "execution(* *(..)) || execution(*.new(..))" 
-      />
-    
-      <pointcut name="monitored" expression="pkg() AND allMethods()" />
-      <pointcut name="tracedCatch" expression="pkg()" />
-    </concrete-aspect>
     <concrete-aspect name="Concrete2" extends="pl.edu.agh.heimdall.Catcher">
       
       <pointcut name="pkg" expression="within(rangarok..*)" />
