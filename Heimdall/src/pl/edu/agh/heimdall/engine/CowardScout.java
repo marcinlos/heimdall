@@ -1,5 +1,7 @@
 package pl.edu.agh.heimdall.engine;
 
+import java.lang.reflect.Field;
+
 import org.aspectj.lang.JoinPoint;
 
 import pl.edu.agh.heimdall.statistics.Statistics;
@@ -16,7 +18,7 @@ public abstract class CowardScout implements Scout{
 
 	@Override
 	public Optional<Maneuver> determineManeuverForGetField(JoinPoint joinPoint,
-			Statistics statistics) {
+			Statistics statistics, Field fieldBeingGot) {
 		return Optional.<Maneuver>absent();
 	}
 

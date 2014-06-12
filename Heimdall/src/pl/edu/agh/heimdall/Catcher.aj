@@ -7,14 +7,15 @@ import java.util.LinkedList;
 
 import javax.inject.Inject;
 
+import org.aspectj.lang.JoinPoint;
+
+import com.google.common.base.Optional;
+
 import pl.edu.agh.heimdall.configuration.CatcherModule;
 import pl.edu.agh.heimdall.engine.Maneuver;
 import pl.edu.agh.heimdall.engine.Scout;
 import pl.edu.agh.heimdall.engine.SpyIntervention;
 import pl.edu.agh.heimdall.statistics.Statistics;
-
-import com.google.common.base.Optional;
-import com.google.common.reflect.Reflection;
 
 public abstract privileged aspect Catcher {
 
@@ -33,7 +34,7 @@ public abstract privileged aspect Catcher {
 	abstract pointcut monitored();
 
 	abstract pointcut monitoredMethodCalls();
-	
+
 	abstract pointcut monitoredGetFields();
 
 	private pointcut affected(): monitored() && !internals();
@@ -41,57 +42,143 @@ public abstract privileged aspect Catcher {
 	private pointcut affectedMethods(): affected() && monitoredMethodCalls();
 
 	private pointcut affectedGet(Object o): affected() && monitoredGetFields() && this(o);
-	
-	before(Object o): affectedGet(o){
-		System.out.println("This is: " + o);
+
+	Object around(Object o): affectedGet(o){
+		//
+		// Object toReturn = null;
+		// Deque<Maneuver> maneuvers = determineManeuvers(thisJoinPoint);
+		//
+		// System.out.println("+++++");
+		// System.out.println("This is: " + o);
+		//
+
+		// boolean oldAccesibleState = field.isAccessible();
+		// field.setAccessible(true);
+		// if (String.class.isAssignableFrom(field.getType())) {
+		// try {
+		// System.out.println("String!");
+		// field.set(o, "Whhhhhhiiiipppi");
+		// } catch (IllegalArgumentException | IllegalAccessException e) {
+		// e.printStackTrace();
+		// }
+		// }
+		// field.setAccessible(oldAccesibleState);
+		// System.out.println("-----");
+		// Object toRet = proceed(o);
+		// return toRet;
+
 		
-		String fieldName = thisJoinPoint.getSignature().getName();
+
+		Optional<Object> optionalToReturn = null;
+		Deque<Maneuver> maneuvers = determineManeuvers(thisJoinPoint);
+
+		Optional<SpyIntervention> neededSpyIntervention = determineSpyIntervention(
+				maneuvers, thisJoinPoint);
+
+		optionalToReturn = appendSpyIntervention(neededSpyIntervention,
+				thisJoinPoint);
 		
-		System.out.println(fieldName);
-//		try {
-//			Field affectedField = o.getClass().getField(fieldName);
-//			affectedField.setAccessible(true);
-//			affectedField.set(o, "luuzik");
-//			affectedField.setAccessible(false);
-//		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		System.out.println("-----");
+		optionalToReturn = optionalToReturn.or(Optional.fromNullable(proceed(o)));
+
+		firePostOperationPhase(maneuvers, thisJoinPoint);
+
+		return optionalToReturn.orNull();
 	}
 
-	Object around(): affectedMethods(){
-		Object toReturn = null;
+	private Deque<Maneuver> determineManeuvers(JoinPoint joinPoint) {
 		Deque<Maneuver> maneuvers = new ArrayDeque<Maneuver>();
 		for (Scout scout : scouts) {
-			Optional<Maneuver> possibleManuever = scout
-					.determineManeuverForMethodCall(thisJoinPoint, statistics);
+			Optional<Maneuver> possibleManuever;
+			if (joinPoint.getKind().equals("field-get")) {
+				Field field = findModifiedField(joinPoint);
+				possibleManuever = scout.determineManeuverForGetField(
+						joinPoint, statistics, field);
+			} else {
+				possibleManuever = scout.determineManeuverForMethodCall(
+						joinPoint, statistics);
+			}
 			if (possibleManuever.isPresent()) {
 				maneuvers.add(possibleManuever.get());
 			}
 		}
+		return maneuvers;
+	}
 
+	private Field findModifiedField(JoinPoint joinPoint) throws Error {
+		String fieldName = joinPoint.getSignature().getName();
+		Optional<Field> optionalField = findDeclaredField(joinPoint.getTarget(), fieldName);
+		if (!optionalField.isPresent()) {
+			throw new Error("This should not happen!");
+		}
+		Field field = optionalField.get();
+		return field;
+	}
+
+	Object around(): affectedMethods(){
+
+		Optional<Object> optionalToReturn = null;
+		Deque<Maneuver> maneuvers = determineManeuvers(thisJoinPoint);
+
+		Optional<SpyIntervention> neededSpyIntervention = determineSpyIntervention(
+				maneuvers, thisJoinPoint);
+
+		optionalToReturn = appendSpyIntervention(neededSpyIntervention,
+				thisJoinPoint);
+
+		optionalToReturn = optionalToReturn.or(Optional.fromNullable(proceed()));
+
+		firePostOperationPhase(maneuvers, thisJoinPoint);
+
+		statistics.addInvocationOf(thisJoinPoint.getTarget(), thisJoinPoint
+				.getSignature().getName());
+
+		return optionalToReturn.orNull();
+	}
+
+	private Optional<Object> appendSpyIntervention(
+			Optional<SpyIntervention> neededSpyIntervention, JoinPoint joinPoint) {
+		Object toReturn = null;
+		if (neededSpyIntervention.isPresent()) {
+			toReturn = neededSpyIntervention.get().impersonateEnemy(
+					joinPoint.getTarget());
+		}
+		return Optional.fromNullable(toReturn);
+	}
+
+	private void firePostOperationPhase(Deque<Maneuver> maneuvers,
+			JoinPoint jointPoint) {
+		while (!maneuvers.isEmpty()) {
+			Maneuver lastManeuver = maneuvers.pollLast();
+			lastManeuver.postOperationPhase(jointPoint);
+		}
+	}
+
+	private Optional<SpyIntervention> determineSpyIntervention(
+			Deque<Maneuver> maneuvers, JoinPoint joinPoint) {
 		Optional<SpyIntervention> neededSpyIntervention = Optional.absent();
 		// only the first spy intervention works - potentially dangerous
 		for (Maneuver maneuver : maneuvers) {
 			if (!neededSpyIntervention.isPresent()) {
-				neededSpyIntervention = maneuver
-						.preOperationPhase(thisJoinPoint);
+				neededSpyIntervention = maneuver.preOperationPhase(joinPoint);
 			}
 		}
-		if (neededSpyIntervention.isPresent()) {
-			toReturn = neededSpyIntervention.get().impersonateEnemy(
-					thisJoinPoint.getTarget());
-		} else {
-			toReturn = proceed();
-		}
-
-		while (!maneuvers.isEmpty()) {
-			Maneuver lastManeuver = maneuvers.pollLast();
-			lastManeuver.postOperationPhase(thisJoinPoint);
-		}
-		statistics.addInvocationOf(thisJoinPoint.getTarget(), thisJoinPoint
-				.getSignature().getName());
-		return toReturn;
+		return neededSpyIntervention;
 	}
+
+	private Optional<Field> findDeclaredField(Object o, String fieldName) {
+		Class<?> clazz = o.getClass();
+		Field toReturnField = null;
+		while (clazz != null && toReturnField == null) {
+			try {
+				toReturnField = clazz.getDeclaredField(fieldName);
+			} catch (SecurityException e) {
+				e.printStackTrace();
+			} catch (NoSuchFieldException e) {
+				break;
+			}
+			clazz = clazz.getSuperclass();
+		}
+		return Optional.fromNullable(toReturnField);
+	}
+
 }
