@@ -28,19 +28,19 @@ public class FieldInitializationScout extends BaseScout {
 			throw new Error("This shouldn't happen");
 		}
 		if (String.class.isAssignableFrom(fieldBeingGot.getType())) {
-			return Optional.<Maneuver> of(ManueversFactory
+			return Optional.<Maneuver> of(ManeuversFactory
 					.getManeuverForInterventionType(
 							InterventionType.STRING_INJECT, fieldBeingGot));
 		} else if (List.class.isAssignableFrom(fieldBeingGot.getType())) {
-			return Optional.<Maneuver> of(ManueversFactory
+			return Optional.<Maneuver> of(ManeuversFactory
 					.getManeuverForInterventionType(
 							InterventionType.LIST_INJECT, fieldBeingGot));
 		} else if (Date.class.isAssignableFrom(fieldBeingGot.getType())) {
-			return Optional.<Maneuver> of(ManueversFactory
+			return Optional.<Maneuver> of(ManeuversFactory
 					.getManeuverForInterventionType(
 							InterventionType.DATE_THROW, fieldBeingGot));
 		} else {
-			return Optional.<Maneuver> of(ManueversFactory
+			return Optional.<Maneuver> of(ManeuversFactory
 					.getManeuverForInterventionType(InterventionType.NULL_LOG,
 							fieldBeingGot));
 		}
@@ -69,7 +69,7 @@ public class FieldInitializationScout extends BaseScout {
 
 	}
 
-	private static class ManueversFactory {
+	private static class ManeuversFactory {
 		public static Maneuver getManeuverForInterventionType(
 				InterventionType type, Field field) {
 			switch (type) {

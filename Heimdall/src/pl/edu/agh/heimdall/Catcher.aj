@@ -50,12 +50,12 @@ public abstract privileged aspect Catcher {
 
 		Optional<SpyIntervention> neededSpyIntervention = determineSpyIntervention(
 				maneuvers, thisJoinPoint);
-		
-		//append spy can but nut must change field value
+
+		// append spy can but nut must change field value
 		optionalToReturn = appendSpyIntervention(neededSpyIntervention,
 				thisJoinPoint);
-		
-		if(!optionalToReturn.isPresent()){
+
+		if (!optionalToReturn.isPresent()) {
 			optionalToReturn = Optional.fromNullable(proceed());
 		}
 
@@ -63,7 +63,7 @@ public abstract privileged aspect Catcher {
 
 		return optionalToReturn.orNull();
 	}
-	
+
 	Object around(): affectedMethods(){
 
 		Optional<Object> optionalToReturn = null;
@@ -75,18 +75,23 @@ public abstract privileged aspect Catcher {
 		optionalToReturn = appendSpyIntervention(neededSpyIntervention,
 				thisJoinPoint);
 
-		if(!optionalToReturn.isPresent()){
+		if (!optionalToReturn.isPresent()) {
 			optionalToReturn = Optional.fromNullable(proceed());
 		}
 
 		firePostOperationPhase(maneuvers, thisJoinPoint);
 
-		statistics.addInvocationOf(thisJoinPoint.getTarget(), thisJoinPoint
-				.getSignature().getName());
+		Object target = thisJoinPoint.getTarget();
+		String fullyQualifiedMethodName = thisJoinPoint.getSignature()
+				.toString();
+		if (target == null) {
+			statistics.addStaticIvocation(fullyQualifiedMethodName);
+		} else {
+			statistics.addInvocationOf(target, fullyQualifiedMethodName);
+		}
 
 		return optionalToReturn.orNull();
 	}
-	
 
 	private Deque<Maneuver> determineManeuvers(JoinPoint joinPoint) {
 		Deque<Maneuver> maneuvers = new ArrayDeque<Maneuver>();
@@ -111,15 +116,14 @@ public abstract privileged aspect Catcher {
 
 	private Field findModifiedField(JoinPoint joinPoint) throws Error {
 		String fieldName = joinPoint.getSignature().getName();
-		Optional<Field> optionalField = findDeclaredField(joinPoint.getTarget(), fieldName);
+		Optional<Field> optionalField = findDeclaredField(
+				joinPoint.getTarget(), fieldName);
 		if (!optionalField.isPresent()) {
 			throw new Error("This should not happen!");
 		}
 		Field field = optionalField.get();
 		return field;
 	}
-
-	
 
 	private Optional<Object> appendSpyIntervention(
 			Optional<SpyIntervention> neededSpyIntervention, JoinPoint joinPoint) {
@@ -160,7 +164,7 @@ public abstract privileged aspect Catcher {
 			} catch (SecurityException e) {
 				e.printStackTrace();
 			} catch (NoSuchFieldException e) {
-				//ntd
+				// ntd
 			}
 			clazz = clazz.getSuperclass();
 		}

@@ -13,6 +13,11 @@ public class InMemoryStatistics implements Statistics {
 	WeakHashMap<Object, List<MethodInvocation>> methodsInvocation = new WeakHashMap<>();
 
 	@Override
+	public void addStaticIvocation(String fullyQualifiedMethodName) {
+		addInvocationOf(STATIC_REPRESENTANT, fullyQualifiedMethodName);
+	}
+
+	@Override
 	public void addInvocationOf(Object o, String fullyQualifiedMethodName) {
 		Preconditions.checkNotNull(o);
 		Preconditions.checkNotNull(fullyQualifiedMethodName);
@@ -26,12 +31,7 @@ public class InMemoryStatistics implements Statistics {
 		invocationsForObject.add(MethodInvocation.create(
 				fullyQualifiedMethodName, oldInvocationsValue + 1));
 	}
-
-	@Override
-	public void addStaticIvocation(String fullyQualifiedMethodName) {
-		addInvocationOf(STATIC_REPRESENTANT, fullyQualifiedMethodName);
-	}
-
+	
 	@Override
 	public boolean wasMethodOnObjectInvokedOnce(Object o, String methodName) {
 		return timesOfMethodOnObjectInvokation(o, methodName) == 1;
