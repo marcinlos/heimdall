@@ -16,13 +16,6 @@ import com.google.common.base.Optional;
 
 public class OnlyOnceScout extends BaseScout {
 
-	private static void writeCommunicateOfSpy(JoinPoint joinPoint,
-			String customPart) {
-		String message = String.format("Method %s called - %s",
-				joinPoint.getSignature(), customPart);
-		System.out.println(message);
-	}
-
 	@SuppressWarnings("serial")
 	private static final HashMap<InterventionType, Optional<Maneuver>> maneuversHashMap = new HashMap<OnlyOnceScout.InterventionType, Optional<Maneuver>>() {
 		{
@@ -30,7 +23,7 @@ public class OnlyOnceScout extends BaseScout {
 					Optional.<Maneuver> of(new BaseManeuver() {
 						public Optional<SpyIntervention> preOperationPhase(
 								JoinPoint joinPoint) {
-							writeCommunicateOfSpy(joinPoint,
+							writeMethodCommunicateOfSpy(joinPoint,
 									"going to be called second time!");
 							return Optional.absent();
 						};
@@ -47,7 +40,7 @@ public class OnlyOnceScout extends BaseScout {
 					Optional.<Maneuver> of(new BaseManeuver() {
 						public Optional<SpyIntervention> preOperationPhase(
 								JoinPoint joinPoint) {
-							writeCommunicateOfSpy(joinPoint,
+							writeMethodCommunicateOfSpy(joinPoint,
 									"pre operation phase!");
 							Main main = (Main) joinPoint.getTarget();
 							main.clean();
@@ -55,7 +48,7 @@ public class OnlyOnceScout extends BaseScout {
 						};
 
 						public void postOperationPhase(JoinPoint joinPoint) {
-							writeCommunicateOfSpy(joinPoint,
+							writeMethodCommunicateOfSpy(joinPoint,
 									"post operation phase!");
 							Main main = (Main) joinPoint.getTarget();
 							main.checkState();
@@ -65,7 +58,7 @@ public class OnlyOnceScout extends BaseScout {
 					Optional.<Maneuver> of(new BaseManeuver() {
 						public Optional<SpyIntervention> preOperationPhase(
 								JoinPoint joinPoint) {
-							writeCommunicateOfSpy(joinPoint,
+							writeMethodCommunicateOfSpy(joinPoint,
 									"avoiding operation!");
 							return Optional
 									.<SpyIntervention> of(new SpyIntervention() {

@@ -29,6 +29,7 @@ public class Main {
 		}
 
 		// Once test
+		System.out.println("\n");
 		writeCaption("once test");
 		m.onceLog();
 		m.onceLog();
@@ -48,6 +49,27 @@ public class Main {
 			System.out.println(e);
 		}
 
+		// parameters test
+		System.out.println("\n");
+		writeCaption("parameters test");
+		b.pLogMethod(new Object(), new Object());
+		b.pLogMethod(new Object(), null);
+		writeSeparator();
+		b.pExceptionMethod(new Object(), new Object());
+		try {
+			b.pExceptionMethod(null, new Object());
+		} catch (IllegalStateException e) {
+			System.out
+					.println("It should be visible in runtime! Method has null parameter:");
+			System.out.println(e);
+		}
+		writeSeparator();
+		b.pInjectMethod("a", "b");
+		b.pInjectMethod(null, "b");
+		b.pInjectMethod("a", null);
+		b.pInjectMethod(null, null);
+		writeSeparator();
+		
 		// main.test(new Object());
 		// main.test(null);
 		// System.out.println("Ending...");
@@ -101,5 +123,17 @@ class B extends Main {
 	public void testFieldsFromSubclass() {
 		System.out.println(test_field_string);
 		System.out.println(test_field_object);
+	}
+
+	public void pLogMethod(Object o, Object o2) {
+		System.out.println(o + "/log/" + o2);
+	}
+
+	public void pExceptionMethod(Object o, Object o2) {
+		System.out.println(o + "/exception/" + o2);
+	}
+
+	public void pInjectMethod(String s1, String s2) {
+		System.out.println(s1 + "/inject/" + s2);
 	}
 }

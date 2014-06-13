@@ -52,10 +52,10 @@ public abstract privileged aspect Catcher {
 				maneuvers, thisJoinPoint);
 
 		// append spy can but nut must change field value
-		optionalToReturn = appendSpyIntervention(neededSpyIntervention,
-				thisJoinPoint);
+		SpyInterventionResult interventionResult = appendSpyIntervention(neededSpyIntervention,thisJoinPoint);
+		optionalToReturn = Optional.fromNullable(interventionResult.returnedValue);
 
-		if (!optionalToReturn.isPresent()) {
+		if (!interventionResult.intervented()) {
 			optionalToReturn = Optional.fromNullable(proceed());
 		}
 
@@ -72,10 +72,10 @@ public abstract privileged aspect Catcher {
 		Optional<SpyIntervention> neededSpyIntervention = determineSpyIntervention(
 				maneuvers, thisJoinPoint);
 
-		optionalToReturn = appendSpyIntervention(neededSpyIntervention,
-				thisJoinPoint);
-
-		if (!optionalToReturn.isPresent()) {
+		SpyInterventionResult interventionResult = appendSpyIntervention(neededSpyIntervention,thisJoinPoint);
+		optionalToReturn = Optional.fromNullable(interventionResult.returnedValue);
+		
+		if (!interventionResult.intervented()) {
 			optionalToReturn = Optional.fromNullable(proceed());
 		}
 
@@ -125,14 +125,13 @@ public abstract privileged aspect Catcher {
 		return field;
 	}
 
-	private Optional<Object> appendSpyIntervention(
+	private SpyInterventionResult appendSpyIntervention(
 			Optional<SpyIntervention> neededSpyIntervention, JoinPoint joinPoint) {
-		Object toReturn = null;
 		if (neededSpyIntervention.isPresent()) {
-			toReturn = neededSpyIntervention.get().impersonateEnemy(
-					joinPoint.getTarget());
+			return new SpyInterventedResult(neededSpyIntervention.get()
+					.impersonateEnemy(joinPoint.getTarget()));
 		}
-		return Optional.fromNullable(toReturn);
+		return SPY_NOT_INTERVENTED_RESULT;
 	}
 
 	private void firePostOperationPhase(Deque<Maneuver> maneuvers,
@@ -170,5 +169,40 @@ public abstract privileged aspect Catcher {
 		}
 		return Optional.fromNullable(toReturnField);
 	}
+
+	private static abstract class SpyInterventionResult {
+		private Object returnedValue;
+
+		public abstract boolean intervented();
+
+		public Object getReturnedValue() {
+			return returnedValue;
+		}
+
+		public SpyInterventionResult(Object returnedValue) {
+			this.returnedValue = returnedValue;
+		}
+	}
+
+	private class SpyInterventedResult extends SpyInterventionResult {
+
+		public SpyInterventedResult(Object returnedValue) {
+			super(returnedValue);
+		}
+
+		@Override
+		public boolean intervented() {
+			return true;
+		}
+
+	}
+
+	private static final SpyInterventionResult SPY_NOT_INTERVENTED_RESULT = new SpyInterventionResult(
+			null) {
+		@Override
+		public boolean intervented() {
+			return false;
+		}
+	};
 
 }
