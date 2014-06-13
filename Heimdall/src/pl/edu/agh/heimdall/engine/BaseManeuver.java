@@ -4,7 +4,7 @@ import org.aspectj.lang.JoinPoint;
 
 import com.google.common.base.Optional;
 
-public abstract class DoNothingManeuver implements Maneuver{
+public abstract class BaseManeuver implements Maneuver{
 
 	@Override
 	public Optional<SpyIntervention> preOperationPhase(JoinPoint joinPoint) {

@@ -41,33 +41,30 @@ public abstract privileged aspect Catcher {
 
 	private pointcut affectedMethods(): affected() && monitoredMethodCalls();
 
-	private pointcut affectedGet(Object o): affected() && monitoredGetFields() && this(o);
+	private pointcut affectedGet(): affected() && monitoredGetFields();
 
-	Object around(Object o): affectedGet(o){
-		//
-		// Object toReturn = null;
-		// Deque<Maneuver> maneuvers = determineManeuvers(thisJoinPoint);
-		//
-		// System.out.println("+++++");
-		// System.out.println("This is: " + o);
-		//
+	Object around(): affectedGet(){
 
-		// boolean oldAccesibleState = field.isAccessible();
-		// field.setAccessible(true);
-		// if (String.class.isAssignableFrom(field.getType())) {
-		// try {
-		// System.out.println("String!");
-		// field.set(o, "Whhhhhhiiiipppi");
-		// } catch (IllegalArgumentException | IllegalAccessException e) {
-		// e.printStackTrace();
-		// }
-		// }
-		// field.setAccessible(oldAccesibleState);
-		// System.out.println("-----");
-		// Object toRet = proceed(o);
-		// return toRet;
+		Optional<Object> optionalToReturn = null;
+		Deque<Maneuver> maneuvers = determineManeuvers(thisJoinPoint);
 
+		Optional<SpyIntervention> neededSpyIntervention = determineSpyIntervention(
+				maneuvers, thisJoinPoint);
 		
+		//append spy can but nut must change field value
+		optionalToReturn = appendSpyIntervention(neededSpyIntervention,
+				thisJoinPoint);
+		
+		if(!optionalToReturn.isPresent()){
+			optionalToReturn = Optional.fromNullable(proceed());
+		}
+
+		firePostOperationPhase(maneuvers, thisJoinPoint);
+
+		return optionalToReturn.orNull();
+	}
+	
+	Object around(): affectedMethods(){
 
 		Optional<Object> optionalToReturn = null;
 		Deque<Maneuver> maneuvers = determineManeuvers(thisJoinPoint);
@@ -77,13 +74,19 @@ public abstract privileged aspect Catcher {
 
 		optionalToReturn = appendSpyIntervention(neededSpyIntervention,
 				thisJoinPoint);
-		
-		optionalToReturn = optionalToReturn.or(Optional.fromNullable(proceed(o)));
+
+		if(!optionalToReturn.isPresent()){
+			optionalToReturn = Optional.fromNullable(proceed());
+		}
 
 		firePostOperationPhase(maneuvers, thisJoinPoint);
 
+		statistics.addInvocationOf(thisJoinPoint.getTarget(), thisJoinPoint
+				.getSignature().getName());
+
 		return optionalToReturn.orNull();
 	}
+	
 
 	private Deque<Maneuver> determineManeuvers(JoinPoint joinPoint) {
 		Deque<Maneuver> maneuvers = new ArrayDeque<Maneuver>();
@@ -91,8 +94,10 @@ public abstract privileged aspect Catcher {
 			Optional<Maneuver> possibleManuever;
 			if (joinPoint.getKind().equals("field-get")) {
 				Field field = findModifiedField(joinPoint);
+				field.setAccessible(true);
 				possibleManuever = scout.determineManeuverForGetField(
-						joinPoint, statistics, field);
+						joinPoint, statistics, field, joinPoint.getTarget());
+				field.setAccessible(false);
 			} else {
 				possibleManuever = scout.determineManeuverForMethodCall(
 						joinPoint, statistics);
@@ -114,26 +119,7 @@ public abstract privileged aspect Catcher {
 		return field;
 	}
 
-	Object around(): affectedMethods(){
-
-		Optional<Object> optionalToReturn = null;
-		Deque<Maneuver> maneuvers = determineManeuvers(thisJoinPoint);
-
-		Optional<SpyIntervention> neededSpyIntervention = determineSpyIntervention(
-				maneuvers, thisJoinPoint);
-
-		optionalToReturn = appendSpyIntervention(neededSpyIntervention,
-				thisJoinPoint);
-
-		optionalToReturn = optionalToReturn.or(Optional.fromNullable(proceed()));
-
-		firePostOperationPhase(maneuvers, thisJoinPoint);
-
-		statistics.addInvocationOf(thisJoinPoint.getTarget(), thisJoinPoint
-				.getSignature().getName());
-
-		return optionalToReturn.orNull();
-	}
+	
 
 	private Optional<Object> appendSpyIntervention(
 			Optional<SpyIntervention> neededSpyIntervention, JoinPoint joinPoint) {
@@ -174,7 +160,7 @@ public abstract privileged aspect Catcher {
 			} catch (SecurityException e) {
 				e.printStackTrace();
 			} catch (NoSuchFieldException e) {
-				break;
+				//ntd
 			}
 			clazz = clazz.getSuperclass();
 		}

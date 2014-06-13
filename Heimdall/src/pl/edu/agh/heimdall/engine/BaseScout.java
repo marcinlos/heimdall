@@ -8,7 +8,7 @@ import pl.edu.agh.heimdall.statistics.Statistics;
 
 import com.google.common.base.Optional;
 
-public abstract class CowardScout implements Scout{
+public abstract class BaseScout implements Scout{
 
 	@Override
 	public Optional<Maneuver> determineManeuverForMethodCall(
@@ -18,7 +18,7 @@ public abstract class CowardScout implements Scout{
 
 	@Override
 	public Optional<Maneuver> determineManeuverForGetField(JoinPoint joinPoint,
-			Statistics statistics, Field fieldBeingGot) {
+			Statistics statistics, Field fieldBeingGot, Object fieldOwner) {
 		return Optional.<Maneuver>absent();
 	}
 

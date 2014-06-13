@@ -10,5 +10,5 @@ import com.google.common.base.Optional;
 
 public interface Scout {
 	Optional<Maneuver> determineManeuverForMethodCall(JoinPoint joinPoint, Statistics statistics);
-	Optional<Maneuver> determineManeuverForGetField(JoinPoint joinPoint, Statistics statistics, Field fieldBeingGot);
+	Optional<Maneuver> determineManeuverForGetField(JoinPoint joinPoint, Statistics statistics, Field fieldBeingGot, Object fieldOwner);
 }

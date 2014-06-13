@@ -6,14 +6,14 @@ import pl.edu.agh.heimdall.statistics.Statistics;
 
 import com.google.common.base.Optional;
 
-public class OnlyOnceScout extends CowardScout {
+public class OnlyOnceScout extends BaseScout {
 	@Override
 	public Optional<Maneuver> determineManeuverForMethodCall(
 			JoinPoint joinPoint, Statistics statistics) {
 		int invocationTimes = statistics.timesOfMethodOnObjectInvokation(
 				joinPoint.getTarget(), joinPoint.getSignature().getName());
 		return invocationTimes != 0 ? Optional
-				.<Maneuver> of(new DoNothingManeuver() {
+				.<Maneuver> of(new BaseManeuver() {
 
 					@Override
 					public Optional<SpyIntervention> preOperationPhase(

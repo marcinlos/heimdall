@@ -8,14 +8,14 @@ import pl.edu.agh.heimdall.statistics.Statistics;
 
 import com.google.common.base.Optional;
 
-public class NotNullScout extends CowardScout {
+public class NotNullScout extends BaseScout {
 
 	@Override
 	public Optional<Maneuver> determineManeuverForMethodCall(
 			JoinPoint joinPoint, Statistics statistics) {
 		for (Object o : joinPoint.getArgs()) {
 			if (o == null) {
-				return Optional.<Maneuver> of(new DoNothingManeuver() {
+				return Optional.<Maneuver> of(new BaseManeuver() {
 					@Override
 					public Optional<SpyIntervention> preOperationPhase(
 							JoinPoint joinPoint) {
@@ -37,26 +37,4 @@ public class NotNullScout extends CowardScout {
 		return Optional.<Maneuver> absent();
 	}
 
-	@Override
-	public Optional<Maneuver> determineManeuverForGetField(JoinPoint joinPoint,
-			Statistics statistics, final Field fieldBeingGot) {
-		if (String.class.isAssignableFrom(fieldBeingGot.getType())) {
-			return Optional.<Maneuver> of(new DoNothingManeuver() {
-				@Override
-				public Optional<SpyIntervention> preOperationPhase(
-						JoinPoint joinPoint) {
-					System.out.println(String.format(
-							"String going to be as %s field!!!",
-							fieldBeingGot.getName()));
-					return Optional.<SpyIntervention> of(new SpyIntervention() {
-						@Override
-						public Object impersonateEnemy(Object enemy) {
-							return "VERY UGLY WORD";
-						}
-					});
-				}
-			});
-		}
-		return Optional.<Maneuver> absent();
-	}
 }
