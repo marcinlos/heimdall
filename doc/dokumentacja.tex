@@ -1,0 +1,146 @@
+\documentclass[12pt,a4paper,titlepage]{article}
+\usepackage{graphicx}
+\usepackage{graphics}
+\usepackage{float}
+\usepackage{placeins}
+\usepackage{mathtools}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{longtable}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[polish]{babel}
+\selectlanguage{polish}
+\usepackage{adjustbox}
+
+
+
+
+\makeindex
+
+\title{Opis projektu z przedmiotu Technologie Obiektowe i Komponentowe}
+%%\date{}
+\author{Marcin Łoś, Andrzej Kaczmarczyk}
+
+\begin{document}
+\maketitle
+\pagestyle{empty}
+\pagestyle{headings}
+
+\section{Opis dokumentu}
+ %tutaj coś
+ 
+\section{Cel projektu}
+ Głównym celem było wykorzystanie rozszerzenia do języka Java - AspectJ - pozwalającego na użycie metod programowania aspektowego w środowisku Java.
+ 
+ Temat projektu nie był ściśle określony. Zgodnie z ustaleniami z prowadzącym zdecydowaliśmy się spróbować wykorzystać programowanie aspektowe, aby uprościć analizę, odpluskwianie, poszukiwanie błędów programów w czasie rzeczywistym.
+ 
+ Z powodu braku ścisłych wymagań oraz jednoznacznego celu, w ramach prac projektowych jeden pomysł został zidentyfikowany jako niewykonalny w określonym czasie, powstały dwa porzucone prototypy oraz biblioteka - jako produkt końcowy. Kolejne fragmentu dokumentu opisują pokrótce każdy z wymienionych wyżej artefaktów.
+ 
+\section{Istniejące podobne rozwiązania}
+ %generalnie brak
+
+\section{Artefakty pośrednie}
+ Sekcja zawiera opis porzuconych prototypów wykonanych w ramach próby rozpoznania możliwości języka AspectJ oraz jego przydatności w opisanym uprzednio temacie.
+ \subsection{Śledzenie wykonania w czasie wykonania}
+  Pierwszym pomysłem było stworzenie biblioteki, która pozwoli na śledzenie wykonania programu z uwzględnieniem wywoływania poszczególnych metod oraz zbierania statystyk. Punktem wyjścia do tej koncepcji była trudność z analizą odziedziczonego kodu, a szczególnie jego części, które swoje działanie opierają na zasadzie odwróconego sterowania i zdarzeniach (event-driven programming).
+  
+  W założeniach produkt miał także podpowiadać (na podstawie zebranych danych) różne brzydkie zapaszki kodu(ang. code smells) oraz wskazywać, w miarę możliwości, jak można się ich pozbyć. Tego typu analiza miała być przeprowadzana na podstawie zebranych w czasie wykonania śledzonego programu danych.
+  
+  Dodatkowo, chcieliśmy także dostarczyć klienta graficznego, który umożliwiałby podgląd zależności pomiędzy obiektami - przesyłane komunikaty, ich zawartość, przebieg sterowania. Graficzny interfejs miałby też za zadanie wizualizować wspomniane w poprzednim akapicie funkcje w przejrzysty dla użytkownika sposób.
+  \subsubsection*{Rezultat}
+   Po zaprezentowaniu prototypu prowadzącemu wspólnie doszliśmy do wniosku, że główna część pracy przy tego typu projekcie polegałaby nie na wykorzystaniu metod aspektowych, ale na implementacji interfejsu graficznego oraz analizie grafu zebranych danych. W praktyce bowiem, okazało się, że część dotycząca programowania aspektowego w projekcie właściwie zamyka w jednym krótkim, lekkim oraz łatwym do implementacji aspekcie. Dodatkowo aspekt ten, był niemalże pozbawiony logiki - jego zadaniem było jedynie wysyłanie informacji o odpowiednim zdarzeniu w programie (wywołanie metody, pobranie pola, wystąpienie wyjątku itp.). 
+   
+   Wobec tego, na polecenie prowadzącego, porzuciliśmy prototyp oraz pomysł kierując nasz projekt w inną stronę. 
+   
+ \subsection{Wizualizacja zdarzeń interfejsu Swing konfigurowana adnotacjami}
+ Koncepcja oparta została o próbę wykonania oprogramowania, które przydałoby się w analizie oraz wizualizacji działania komponentów biblioteki Swing (oraz, docelowo, innych bibliotek graficznych).
+ 
+ Biblioteka miała umożliwiać wybór odpowiednich paczek komponentów, które mają być śledzone oraz sposób ich śledzenia. Po tak przygotowanej konfiguracji po uruchomieniu programu użytkownik widziałby moment reakcji komponentu na poszczególne zdarzenia. Wizualizacja opierałaby się o dymki, z informacjami takimi jak sposób śledzenia, wywołana metoda, nazwa komponentu wywołującego, wywoływanego itp., pokazujące się, jak wspomniano wyżej, w momencie danego zdarzenia. Konfiguracja przebiegałaby za pomocą adnotacji.
+ 
+ \subsubsection*{Rezultat}
+  Podobnie, jak w przypadku poprzedniego pomysłu, wykonaliśmy prototyp. Umożliwiał on większość tego, o czym wspomniano w opisie pomysłu jednak w surowej formie (mamy na myśli niedopracowane nazewnictwo, interfejs użytkownika oraz gruboziarnistą możliwość konfiguracji). Zaimplementowaliśmy cztery sposoby śledzenia zdarzeń związanych z architekturą Swing'a. Przedstawiamy opis wraz z odpowiadającymi adnotacjami języka Java:
+  \begin{enumerate}
+   \item @ImpactOn - śledzenie każdego obiektu, na który wpływ ma adnotowany typ 
+   \item zestaw adnotacji typu @*Traced - pierwsza część nazwy adnotacji dotyczy rodzaju Listener'a, który występuje w specyfikacji Swing'a dla każdego komponentu. Adnotacja oznacza śledzenie każdego podanego w argumencie konkretnej adnotacji wydarzenia związanego z danym, odpowiadającym adnotacji, Listener'em;
+   \item @Marked - śledzenie każdego odwołanie do typu adnotowanego tą metodą.
+  \end{enumerate}
+  
+  Po pokazaniu prototypu prowadzącemu wywiązała się dyskusja dotycząca przydatności rozwiązania związanego z konfiguracją adnotacjami. Taki sposób konfiguracji wymaga rekompilacji kodu (co jednak nie było jeszcze dyskwalifikujące dla prototypu) oraz wstępnego znajomości struktury kodu. Szczególnie drugi argument spowodował porzucenie dalszego rozwoju projektu w kierunku implementacji dodatkowych adnotacji oraz poprawy już istniejących na rzecz kolejnego pomysłu, który miał być nastawiony bardziej na aspekt poznania nieznanego kodu. Zgodziliśmy się z prowadzącym, aby zostawić tę część projektu jako uzupełnienie następnego pomysłu (gdyby ten okazał się trafiony) polegające na tym, że po wstępnym rozpoznaniu kodu przygotowana infrastruktura pozwoliłaby go skrupulatnie przeanalizować.
+  
+  Istotnym jest, abyśmy wspomnieli także jasno o tym, że adnotacje, które dotyczą całego typu, w sposób oczywisty, nie nadają się do stosowania standardowych klas Swinga. Wymagałoby to bowiem rekompilacji klasy bibliotecznej, co nie ani jest bezpieczne dla ewentualnych klientów, ani wygodne.
+
+ \subsection{Wizualizacja zdarzeń interfejsu Swing konfigurowana w czasie rzeczywistym}
+ Dla bezproblemowego rozpoznania nieznanego kodu przydałoby się narzędzie, które pozwalałoby w sposób dynamiczny sterować śledzonymi zdarzeniami. Dynamizm jest konieczny, gdyż próba pokazania wszystkich możliwych akcji doprowadziłaby tylko i wyłącznie do zaciemnienia obrazu. Mogłoby ono działać na zasadzie duplikacji interfejsu użytkownika w innym oknie, w którym konfigurowałoby się odpowiednie tryby śledzenia w sposób wizualny, w czasie wykonania programu. Alternatywnie, można było spróbować dostarczyć okna konfiguracyjnego z prostą listą komponentów, na której można byłoby konfigurować śledzenie.
+ 
+ Opisane rozwiązanie wymagałoby dodania do każdej klasy interfejsu użytkownika możliwości śledzenia danej aktywności na żądanie przekazane w czasie rzeczywistym.
+ 
+  \subsubsection*{Rezultat}
+   Po wykonaniu serii prób i testów okazało się, że sposób ten pozostaje poza granicami wykonalności. Głównym problemem okazała się niemożliwość tkania (aplikacji aspektów) do klas z paczek (oraz paczek potomnych) java oraz javax. Posunęliśmy się do nietrywialnych operacji na Classloaderach Javy, włącznie z pomijaniem jednego ze standardowych (tzw. Application Classloader). Nawet oczywista niestabilność tego rozwiązania nie grała roli, ponieważ te manipulacje nie przyniosły satysfakcjonującego efektu.
+   
+\section{Produkt ostateczny}
+ Rozdział opisuje szerzej ostateczny produkt, który udało się uzyskać w drodze poszukiwania odpowiedniego rozwiązania poprzez zestaw prototypów. 
+  
+ \subsection{Problem}
+  Nowoczesne programowanie często posługuje się pojęciem kontraktu. Jest to pewien zestaw reguł tworzonych zazwyczaj przez twórców jakichkolwiek interfejsów, które opisują sposób zachowania się implementacji danego interfejsu. Czasem kontrakty takie dotyczą także, szerzej, przebiegu wykonania programu. Mówią one wtedy przykładowo, że przed wywołaniem, którejś z metod należy koniecznie wywołać inną lub odwrotnie (przykładowo zapewnienie poprawnej obsługi transakcyjności w kodzie). Ostatecznie ustaliliśmy, wraz z prowadzącym, że skupimy się na próbie obsługi sytuacji, które takowy kontrakt naruszają. Problem jest więc pewną wariacją na temat szerszego tematu znanego pod nazwą Design by contract.
+   
+ \subsection{Rozwiązanie}
+  Zaproponowaliśmy ogólną bibliotekę umożliwiającą sprawdzanie warunków kontraktu wykonania konkretnej metody lub pobrania pola oraz podjęcie w tym celu odpowiednich kroków takich jak wywołanie dodatkowych operacji przed akcją, zamiast niej oraz po niej. Dodatkowo, biblioteka posiada wbudowany mechanizm śledzenia wywoływanych, dla każdego obiektu, metod.
+   
+  Nasze rozwiązanie pozwala definiować kontrakty niezależnie od kodu oraz dynamicznie, a dodatkowo umożliwia korektę zachowania programu w jego wykonaniu. Dzięki temu biblioteka może przydać się głównie do wykrywania sytuacji niebezpiecznych (z punktu widzenia niespełnionego kontraktu) oraz ich korygowania. Z tego powodu, postanowiliśmy nadać projektowi nazwę: ``Biblioteka do obsługi niebezpiecznych sytuacji czasu wykonania''.
+  
+  \subsection{Funkcje oraz zaimplementowane szablony}
+   Funkcje dotyczące sprawdzania warunków kontraktu:
+   \begin{itemize}
+    \item prowadzenie statystyk wywołania metod dla każdego obiektu z osobna;
+    \item definiowanie zakresu sprawdzanych warunków (poprzez edycję pliku odpowiedzialnego za definicję joinpointów);
+    \item sprawdzanie warunków kontraktu zarówno dla wywołania metod jak i pobrania pól;
+    \item sprawdzanie warunków kontraktu na podstawie dynamicznych danych dotyczących konkretnego wywołania metody lub pobrania obiektu;
+    \item możliwość definiowania warunków bezpośrednio w kodzie Java - bez zbędnego, dodatkowego języka.
+   \end{itemize}
+   
+    Funkcje dotyczące możliwych do wykonania kroków w razie wykrycia naruszenia kontraktu:
+    \begin{itemize}
+     \item wykonanie operacji przed wykonaniem danej akcji;
+     \item wykonanie operacji po wykonaniu danej akcji;
+     \item wykonanie operacji zamiast wykonania danej akcji.
+    \end{itemize}
+    
+    W ramach biblioteki zaimplementowano poniższe szablony oraz przykłady pokazujące działanie biblioteki:
+    \begin{itemize}
+     \item ogólny szablon definiujący trzy możliwe akcje - logowanie, rzucanie wyjątku, operacja dodatkowa - który pozwala na szybką implementację rzeczonych rozwiązań;
+     \item obsługa potencjalnie niebezpiecznej sytuacji dotyczącej braku przeciążonych metod equals() oraz hashCode() w trzech wariantach - logowanie, rzucanie wyjątku, poprawa zachowania poprzez wywołanie odpowiedniej metody naprawczej;
+     \item obsługa niewygodnego braku przeciążenia funkcji toString() w trzech wariantach (jak punkt wyżej);
+     \item obsługa niebezpiecznej sytuacji przesłania wartości ``null'' jako parametru funkcji, w trzech wariantach - logowanie, rzucenie wyjątku oraz próba uzupełnienia wartości null odpowiednią wartością ``[null]'' w przypadku, gdy parametr jest typu String;
+     \item obsługa niebezpiecznej sytuacji odwołania do niezainicjalizowanego pola klasy, w trzech wariantach (jak wyżej, z tym, że naprawa dotyczy zarówno pola typu String jak i ArrayList, do którego wstrzykiwana jest pusta lista).
+    \end{itemize}
+    
+  \subsection{Architektura}
+   Najistotniejszą częścią są deskryptory kontraktów (interfejs Scout), które definiują kontrakty oraz zachowania. Zachowania reprezentowane są przez interfejs Maneuver, a interfejs SpyIntervention reprezentuje zachowanie, które zastępuje wykonanie konkretnej akcji.
+   
+   Rdzeń biblioteki składa się z abstrakcyjnego aspektu, którego joinpointy muszą zostać zdefiniowane przez użytkownika. Ich definicja wskazuje, które z metod lub pobrań pól klasy będą podlegały sprawdzaniu poprzez deskryptory kontraktów. Aspekt jest też odpowiedzialny za odpowiednie sterowanie zdefiniowanymi deskryptorami kontraktów.
+   
+   Istotną częścią architektury jest także moduł biblioteki Guice, w którym to wskazane są używane deskryptory kontraktów.
+
+  \subsection{Ograniczenia}
+   Ze względu na naturę języka AspectJ głównym ograniczeniem użycia biblioteki jest to, że nie może ona być zaaplikowana do śledzenia tych wywołań, które odbywają się w obrębie kodu paczek java oraz javax. Szerzej opisaliśmy powód tej sytuacji w rozdziale ``Problemy''.
+  \subsection{Rozwój}
+   %śledzenie innych akcji - set, kontruktory itepe
+   %uproszczenie wykjorzsytania interfejsu - jeden plik konfiguracyjny
+   %może coś jeszcze
+\section{Ważniejsze problemy pojawiające się w czasie wykonania projektu}
+%javax, java + classloadery
+%heterogeniczne interfejsy event-driven - np. guje
+%bezpieczeństwo preparowanych swingóW
+\section{Wykorzystane technologie i biblioteki}
+%Java
+%AspectJ + ldt
+%Guice
+%Guava
+\section{Wnioski}
+%nie taki aspectJ piękny jak go malują (javax, java)
+%ładne łączenie aspectJ z klasami Javy i np. Guicem
+%uwaga na moc aspektów, można nieźle namieszać - ce de facto robimy, ale ciii:P
+%słaby debugging - dużo operacji na kodzie
+%trudny projekt - nieustalone wymagania
+\end{document}
