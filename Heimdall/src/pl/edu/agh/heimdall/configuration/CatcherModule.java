@@ -6,6 +6,7 @@ import pl.edu.agh.heimdall.engine.Scout;
 import pl.edu.agh.heimdall.example.FieldInitializationScout;
 import pl.edu.agh.heimdall.example.NullParameterScout;
 import pl.edu.agh.heimdall.example.OnlyOnceScout;
+import pl.edu.agh.heimdall.example.ToStringScout;
 import pl.edu.agh.heimdall.statistics.InMemoryStatistics;
 import pl.edu.agh.heimdall.statistics.Statistics;
 
@@ -25,6 +26,7 @@ public class CatcherModule extends AbstractModule{
 		scouts.add(new NullParameterScout());
 		scouts.add(new OnlyOnceScout());
 		scouts.add(new FieldInitializationScout());
+		scouts.add(new ToStringScout());
 		bind(new TypeLiteral<LinkedList<Scout>>() {}).toInstance(scouts);
 		bind(Statistics.class).to(InMemoryStatistics.class).asEagerSingleton();
 	}

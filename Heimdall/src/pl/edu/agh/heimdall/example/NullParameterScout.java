@@ -19,10 +19,6 @@ import com.google.common.collect.Collections2;
 
 public class NullParameterScout extends LogThrowCustomMethodBaseScout {
 
-	private String getMethodName(JoinPoint joinPoint) {
-		return joinPoint.getSignature().getName();
-	}
-
 	@Override
 	public boolean isLogInterventionType(JoinPoint joinPoint,
 			Statistics statistics) {

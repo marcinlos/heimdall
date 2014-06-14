@@ -11,7 +11,7 @@
       -->
     
       <pointcut name="monitored" expression="pkg()" />
-      <pointcut name="monitoredMethodCalls" expression="call(* *(..)) AND !call(* java..*(..))" />
+      <pointcut name="monitoredMethodCalls" expression="call(* *(..)) AND (!call(* java..*(..)) || call(* java.lang.Object.toString(..)))" />
       <pointcut name="monitoredGetFields" expression="get(* *)  AND !get(* java..*) AND !get(* javax..*)" />
       
       

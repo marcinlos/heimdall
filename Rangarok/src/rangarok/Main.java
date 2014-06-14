@@ -16,9 +16,7 @@ public class Main {
 		B b = new B();
 		Main m = new Main();
 
-		// Get test
-		writeCaption("get test");
-		b.testFieldsFromSubclass();
+		// Get test writeCaption("get test"); b.testFieldsFromSubclass();
 		System.out.println(m.test_field_list.size());
 		try {
 			System.out.println(m.test_field_date);
@@ -28,9 +26,7 @@ public class Main {
 			System.out.println(e);
 		}
 
-		// Once test
-		System.out.println("\n");
-		writeCaption("once test");
+		// Once test System.out.println("\n"); writeCaption("once test");
 		m.onceLog();
 		m.onceLog();
 		writeSeparator();
@@ -49,8 +45,7 @@ public class Main {
 			System.out.println(e);
 		}
 
-		// parameters test
-		System.out.println("\n");
+		// parameters test System.out.println("\n");
 		writeCaption("parameters test");
 		b.pLogMethod(new Object(), new Object());
 		b.pLogMethod(new Object(), null);
@@ -68,8 +63,20 @@ public class Main {
 		b.pInjectMethod(null, "b");
 		b.pInjectMethod("a", null);
 		b.pInjectMethod(null, null);
-		writeSeparator();
-		
+
+		// toString() test
+		System.out.println("\n");
+		writeCaption("toString()");
+		System.out.println(b.toString());
+		try {
+			System.out.println(b.toString());
+		} catch (IllegalStateException e) {
+			System.out
+					.println("It should be visible in runtime! toString is not overloaded:");
+			System.out.println(e);
+		}
+		System.out.println(b.toString());
+
 		// main.test(new Object());
 		// main.test(null);
 		// System.out.println("Ending...");

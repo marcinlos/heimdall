@@ -79,4 +79,8 @@ public abstract class LogThrowCustomMethodBaseScout extends BaseScout {
 
 	protected abstract String getThrowCommunicateMessage();
 
+	protected String getMethodName(JoinPoint joinPoint) {
+		return joinPoint.getSignature().getName();
+	}
+
 }
