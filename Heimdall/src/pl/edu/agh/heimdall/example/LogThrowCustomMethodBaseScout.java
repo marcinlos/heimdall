@@ -2,14 +2,13 @@ package pl.edu.agh.heimdall.example;
 
 import org.aspectj.lang.JoinPoint;
 
-import com.google.common.base.Optional;
-import com.google.common.util.concurrent.UncheckedExecutionException;
-
 import pl.edu.agh.heimdall.engine.BaseManeuver;
 import pl.edu.agh.heimdall.engine.BaseScout;
 import pl.edu.agh.heimdall.engine.Maneuver;
 import pl.edu.agh.heimdall.engine.SpyIntervention;
 import pl.edu.agh.heimdall.statistics.Statistics;
+
+import com.google.common.base.Optional;
 
 public abstract class LogThrowCustomMethodBaseScout extends BaseScout {
 

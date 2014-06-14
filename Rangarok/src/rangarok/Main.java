@@ -64,6 +64,13 @@ public class Main {
 		b.pInjectMethod("a", null);
 		b.pInjectMethod(null, null);
 
+		b.test_field_object = 1;
+		b.test_field_string = "abc";
+		
+		B bb = new B();
+		bb.test_field_object = 1;
+		bb.test_field_string = "abc";
+		
 		// toString() test
 		System.out.println("\n");
 		writeCaption("toString()");
@@ -76,6 +83,32 @@ public class Main {
 			System.out.println(e);
 		}
 		System.out.println(b.toString());
+		
+		// hashCode() test
+		System.out.println("\n");
+		writeCaption("hashCode()");
+		System.out.println(b.hashCode());
+		try {
+		    System.out.println(b.hashCode());
+		} catch (IllegalStateException e) {
+		    System.out
+		            .println("It should be visible in runtime! hashCode is not overloaded:");
+		    System.out.println(e);
+		}
+		System.out.println(b.hashCode());
+		
+		// equals() test
+        System.out.println("\n");
+        writeCaption("equals()");
+        System.out.println(b.equals(bb));
+        try {
+            System.out.println(b.equals(bb));
+        } catch (IllegalStateException e) {
+            System.out
+                    .println("It should be visible in runtime! equals is not overloaded:");
+            System.out.println(e);
+        }
+        System.out.println(b.equals(bb));
 
 		// main.test(new Object());
 		// main.test(null);

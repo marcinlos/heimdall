@@ -3,7 +3,9 @@ package pl.edu.agh.heimdall.configuration;
 import java.util.LinkedList;
 
 import pl.edu.agh.heimdall.engine.Scout;
+import pl.edu.agh.heimdall.example.EqualsScout;
 import pl.edu.agh.heimdall.example.FieldInitializationScout;
+import pl.edu.agh.heimdall.example.HashScout;
 import pl.edu.agh.heimdall.example.NullParameterScout;
 import pl.edu.agh.heimdall.example.OnlyOnceScout;
 import pl.edu.agh.heimdall.example.ToStringScout;
@@ -27,6 +29,8 @@ public class CatcherModule extends AbstractModule{
 		scouts.add(new OnlyOnceScout());
 		scouts.add(new FieldInitializationScout());
 		scouts.add(new ToStringScout());
+		scouts.add(new HashScout());
+		scouts.add(new EqualsScout());
 		bind(new TypeLiteral<LinkedList<Scout>>() {}).toInstance(scouts);
 		bind(Statistics.class).to(InMemoryStatistics.class).asEagerSingleton();
 	}
