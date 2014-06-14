@@ -16,7 +16,8 @@ public class Main {
 		B b = new B();
 		Main m = new Main();
 
-		// Get test writeCaption("get test"); b.testFieldsFromSubclass();
+		//Get test
+		writeCaption("get test"); b.testFieldsFromSubclass();
 		System.out.println(m.test_field_list.size());
 		try {
 			System.out.println(m.test_field_date);
@@ -26,7 +27,8 @@ public class Main {
 			System.out.println(e);
 		}
 
-		// Once test System.out.println("\n"); writeCaption("once test");
+		// Once test
+		System.out.println("\n"); writeCaption("once test");
 		m.onceLog();
 		m.onceLog();
 		writeSeparator();
@@ -45,7 +47,8 @@ public class Main {
 			System.out.println(e);
 		}
 
-		// parameters test System.out.println("\n");
+		// parameters test
+		System.out.println("\n");
 		writeCaption("parameters test");
 		b.pLogMethod(new Object(), new Object());
 		b.pLogMethod(new Object(), null);
