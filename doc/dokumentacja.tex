@@ -121,7 +121,13 @@
 
   \subsection{Ograniczenia}
    Ze względu na naturę języka AspectJ głównym ograniczeniem użycia biblioteki jest to, że nie może ona być zaaplikowana do śledzenia tych wywołań, które odbywają się w obrębie kodu paczek java oraz javax. Szerzej opisaliśmy powód tej sytuacji w rozdziale ``Problemy''.
+
   \subsection{Rozwój}
+   Jakkolwiek w obecnej formie projekt dostarcza już pewnej przydatnej funkcjonalności i pokrywa przypuszczalnie spory zakres potencjalnych przypadków użycia, to posiada pewne ograniczenia. Najistotniejszą kwestią zdają się być śledzone akcje. Obecnie przechwytywane są jedynie wywołania metod i pobieranie wartości pól. W szczególności, brak obsługi konstruktorów (istotne), i ustawiania wartości pól (rzadkie -- mniej istotne).
+
+   Z punktu widzenia użytkownika przydatny byłby także szerszy zakres wbudowanych, gotowych do wykorzystania kontraktów (\texttt{Scout}-ów), szczególnie, że z uwagi na sporą rozrzutność syntaktyczną Javy ich kod z reguły bywa dość obszerny, a te stanowiące część projektu mają w większości raczej charakter demonstracyjny (m. in. nie są w pełni konfigurowalne). Można by także zastanowić się nad konfigurowaniem kontraktów dla poszczególnych metod poprzez adnotacje, jak ma to miejsce np. w Bean Validation API.
+
+   Nieco do życzenia pozostawia także wygoda i prostota korzystania z biblioteki. Na chwilę obecną dodanie własnego kontraktu wymaga ingerencji w kod \texttt{CatcherModule}. Dodanie wygodniejszych i bardziej elastycznych mechanizmów konfiguracji z pewnością wpłynęłoby pozytywnie na komfort użytkowania biblioteki.
    %śledzenie innych akcji - set, kontruktory itepe
    %uproszczenie wykjorzsytania interfejsu - jeden plik konfiguracyjny
    %może coś jeszcze
