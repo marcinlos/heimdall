@@ -1,6 +1,7 @@
 \documentclass[12pt,a4paper,titlepage]{article}
 \usepackage{graphicx}
 \usepackage{float}
+\usepackage[pdftex]{hyperref}
 \usepackage{placeins}
 \usepackage{mathtools}
 \usepackage{amssymb}
@@ -14,6 +15,10 @@
 \selectlanguage{polish}
 \usepackage{adjustbox}
 
+\hypersetup{
+  colorlinks=true,
+  urlcolor=blue,
+}
 
 \title{Opis projektu z przedmiotu Technologie Obiektowe i Komponentowe}
 %%\date{}
@@ -35,6 +40,9 @@
  Z powodu braku ścisłych wymagań oraz jednoznacznego celu, w ramach prac projektowych jeden pomysł został zidentyfikowany jako niewykonalny w określonym czasie, powstały dwa porzucone prototypy oraz biblioteka -- jako produkt końcowy. Kolejne fragmentu dokumentu opisują pokrótce każdy z wymienionych wyżej artefaktów.
  
 \section{Istniejące podobne rozwiązania}
+Istotną grupę narzędzi powiązanych w pewnym stopniu z tematem naszego projektu stanowią implementacje \emph{Design by Contract} dla języka Java. Warto wspomnieć tu projekt Google - cofoja (\url{https://code.google.com/p/cofoja/}), czy też Java Argument Validation (\url{http://java-arg-val.sourceforge.net/introduction.html}). Podobną funkcjonalność zdaje się oferować także JSR 303 (Bean Validation API).
+
+Pewien fragment funkcjonalności ostatecznego produktu, który powstał w ramach projektu -- automatyczne ,,naprawianie'' metod typu \texttt{toString}, \texttt{hashCode} itd. -- znaleźć można w projekcie Lombok (\url{http://projectlombok.org/}), mającym na celu głównie walkę z boilerplatem przy użyciu modyfikacji bytecode'u.
  %generalnie brak
 
 \section{Artefakty pośrednie}
@@ -120,7 +128,7 @@
    Istotną częścią architektury jest także moduł biblioteki Guice, w którym to wskazane są używane deskryptory kontraktów.
 
   \subsection{Ograniczenia}
-   Ze względu na naturę języka AspectJ głównym ograniczeniem użycia biblioteki jest to, że nie może ona być zaaplikowana do śledzenia tych wywołań, które odbywają się w obrębie kodu paczek java oraz javax. Szerzej opisaliśmy powód tej sytuacji w rozdziale ``Problemy''.
+   Ze względu na naturę języka AspectJ głównym ograniczeniem użycia biblioteki jest to, że nie może ona być zaaplikowana do śledzenia tych wywołań, które odbywają się w obrębie kodu paczek \texttt{java.*} oraz \texttt{javax.*}. Szerzej opisaliśmy powód tej sytuacji w rozdziale ``Problemy''.
 
   \subsection{Rozwój}
    Jakkolwiek w obecnej formie projekt dostarcza już pewnej przydatnej funkcjonalności i pokrywa przypuszczalnie spory zakres potencjalnych przypadków użycia, to posiada pewne ograniczenia. Najistotniejszą kwestią zdają się być śledzone akcje. Obecnie przechwytywane są jedynie wywołania metod i pobieranie wartości pól. W szczególności, brak obsługi konstruktorów (istotne), i ustawiania wartości pól (rzadkie -- mniej istotne).
