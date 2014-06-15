@@ -14,6 +14,7 @@
 \usepackage[polish]{babel}
 \selectlanguage{polish}
 \usepackage{adjustbox}
+\usepackage{lmodern}
 
 \hypersetup{
   colorlinks=true,
@@ -26,11 +27,13 @@
 
 \begin{document}
 \maketitle
+\tableofcontents
+\newpage
 \pagestyle{empty}
 \pagestyle{headings}
 
 \section{Opis dokumentu}
- %tutaj coś
+ Dokument krótko opisuje prace procesu wykonywania projektu z przedmiotu Technologie Obiektowe i Komponentowe. Tekst zawiera także zwięzły opis najważniejszych napotkanych problemów, architektury ostatecznego produktu oraz wnioski wyciągnięte po zakończeniu projektu. Dla zachowania porządku umieściliśmy także krótki spis wykorzystanych technologii.
  
 \section{Cel projektu}
  Głównym celem było wykorzystanie rozszerzenia do języka Java -- AspectJ -- pozwalającego na użycie metod programowania aspektowego w środowisku Java.
@@ -47,7 +50,7 @@ Pewien fragment funkcjonalności ostatecznego produktu, który powstał w ramach
 
 \section{Artefakty pośrednie}
  Sekcja zawiera opis porzuconych prototypów wykonanych w ramach próby rozpoznania możliwości języka AspectJ oraz jego przydatności w opisanym uprzednio temacie.
- \subsection{Śledzenie wykonania w czasie wykonania}
+ \subsection{Śledzenie w czasie wykonania}
   Pierwszym pomysłem było stworzenie biblioteki, która pozwoli na śledzenie wykonania programu z uwzględnieniem wywoływania poszczególnych metod oraz zbierania statystyk. Punktem wyjścia do tej koncepcji była trudność z analizą odziedziczonego kodu, a szczególnie jego części, które swoje działanie opierają na zasadzie odwróconego sterowania i zdarzeniach (\emph{event-driven programming}).
   
   W założeniach produkt miał także podpowiadać (na podstawie zebranych danych) różne brzydkie zapaszki kodu(ang. \textit{code smells}) oraz wskazywać, w miarę możliwości, jak można się ich pozbyć. Tego typu analiza miała być przeprowadzana na podstawie zebranych w czasie wykonania śledzonego programu danych.
@@ -118,6 +121,7 @@ Pewien fragment funkcjonalności ostatecznego produktu, który powstał w ramach
      \item obsługa niewygodnego braku przeciążenia funkcji \texttt{toString()} w trzech wariantach (jak punkt wyżej);
      \item obsługa niebezpiecznej sytuacji przesłania wartości \texttt{null} jako parametru funkcji, w trzech wariantach -- logowanie, rzucenie wyjątku oraz próba uzupełnienia wartości null odpowiednią wartością \texttt{''[null]''} w przypadku, gdy parametr jest typu \texttt{String};
      \item obsługa niebezpiecznej sytuacji odwołania do niezainicjalizowanego pola klasy, w trzech wariantach (jak wyżej, z tym, że naprawa dotyczy zarówno pola typu \texttt{String} jak i \texttt{ArrayList}, do którego wstrzykiwana jest pusta lista).
+     \item obsługa niechcianej sytuacji, która polega na wywołaniu dwukrotnie danej metody z konkretnej klasy -- logowanie, rzucenie wyjątku oraz pominięcie wywołania
     \end{itemize}
     
   \subsection{Architektura}
@@ -136,10 +140,8 @@ Pewien fragment funkcjonalności ostatecznego produktu, który powstał w ramach
    Z punktu widzenia użytkownika przydatny byłby także szerszy zakres wbudowanych, gotowych do wykorzystania kontraktów (\texttt{Scout}-ów), szczególnie, że z uwagi na sporą rozrzutność syntaktyczną Javy ich kod z reguły bywa dość obszerny, a te stanowiące część projektu mają w większości raczej charakter demonstracyjny (m. in. nie są w pełni konfigurowalne). Można by także zastanowić się nad konfigurowaniem kontraktów dla poszczególnych metod poprzez adnotacje, jak ma to miejsce np. w Bean Validation API.
 
    Nieco do życzenia pozostawia także wygoda i prostota korzystania z biblioteki. Na chwilę obecną dodanie własnego kontraktu wymaga ingerencji w kod \texttt{CatcherModule}. Dodanie wygodniejszych i bardziej elastycznych mechanizmów konfiguracji z pewnością wpłynęłoby pozytywnie na komfort użytkowania biblioteki.
-   %śledzenie innych akcji - set, kontruktory itepe
-   %uproszczenie wykjorzsytania interfejsu - jeden plik konfiguracyjny
-   %może coś jeszcze
-\section[Problemy]{Ważniejsze problemy pojawiające się w czasie wykonania projektu}
+
+\section{Napotkane problemy}
   Podczas realizacji projektu napotkaliśmy wiele problemów, różnych w swej naturze i wadze.
 
     Jeden z początkowych planów realizacji dotyczył śledzenia wykonania aplikacji ze szczególnym naciskiem na interfejsy graficzne i aplikacje \textit{event-driven}. Pierwotnie realizacja miała być na tyle ogólna, by wykorzystana mogła być do wszelkich tego typu programów i frameworków, jednakże po bardziej dogłębnym przemyśleniu sprawy zmuszeni byliśmy odrzucić to założenie, z uwagi na trudność (bądź wręcz niemożność) wyspecyfikowania interfejsu reprezentującego taką aplikację/bibliotekę na tyle precyzyjnego, by umożliwiał wymagany do realizacji planowanej funkcjonalności stopień interakcji, a zarazem wystarczająco ogólnego, by adekwatnie opisać był w stanie choćby znaczącą część frameworków docelowych (np. Swing + interfejs webowy).
@@ -155,20 +157,18 @@ convention (...)
 
 Alternatywą było wykonanie koniecznych modyfikacji w czasie ładowania. To jednak wymaga tkania bytecode'u klas z pakietów \texttt{java.*} i \texttt{javax.*}, które to AspectJ domyślnie pomija. Przebieg i rezultaty naszych zmagań sugerują, że są po temu dobre powody. Od samego początku na naszej drodze piętrzyły się przeszkody techniczne, których ominięcie prowadziło do coraz to bardziej złożonych i niepraktycznych rozwiązań. By zmusić weavera do przetworzenia potrzebnych nam klas próbowaliśmy stworzyć własnego classloadera, który w pewnych przypadkach odstępuje od standardowego modelu delegacji. Jakkolwiek osiągnęliśmy częściowy sukces, kolejne zagadkowe wyjątki zmusiły nas do kapitulacji i szukania innych, bardziej realistycznych celów.
 
-%javax, java + classloadery
-%heterogeniczne interfejsy event-driven - np. guje
-%bezpieczeństwo preparowanych swingów (jre) + legalność
-
 \section{Wykorzystane technologie i biblioteki}
 Do realizacji projektu wykorzystany został rzecz jasna język Java, oraz biblioteka AspectJ do programowania aspektowego. Tkanie klas odbywa się w czasie ładowania (Load-Time Weaving), przy użyciu javaagenta stanowiącego część biblioteki AspectJ. Do zarządzania aktywnymi kontraktami wykorzystany został framework Guice (dependency injection). W wielu miejscach projektu wykorzystywane są klasy pomocnicze z biblioteki Guava.
-%Java
-%AspectJ + ldt
-%Guice
-%Guava
+
 \section{Wnioski}
-%nie taki aspectJ piękny jak go malują (javax, java)
-%ładne łączenie aspectJ z klasami Javy i np. Guicem
-%uwaga na moc aspektów, można nieźle namieszać - ce de facto robimy, ale ciii:P
-%słaby debugging - dużo operacji na kodzie
-%trudny projekt - nieustalone wymagania
+Pierwszym, najbardziej nam zapadającym w pamięć wnioskiem, z pewnością jest kwestia dotycząca tkania w czasie ładowania klas paczek \texttt{java.*} i \texttt{javax.*}. Niestety, operacja taka wydaje się być prawdopodobnie niemożliwa, a jeśli istnieje jakaś opcja wykonania takiego tkania, to jest to bardzo błędogenne oraz niebezpieczne rozwiązanie opierające się na dużej modyfikacji hierarchii classloaderów. Wobec tego, należy uczciwie stwierdzić, że do pewnych zastosowań samo wykorzystanie AspectJ nie będzie pomocne. Szczególnie należy tu wyróżnić te sytuacje, w których klient chciałby zmienić zachowanie metod bibliotecznych w czasie wykonania. Prawdopodobnie wykorzystanie jakiejś biblioteki do manipulacji bytecodem Javy i dynamiczne tworzenie podklas klas ładowanych mogłoby częściowo rozwiązać problem.
+
+Warto zwrócić uwagę na to, iż łączenie aspektów języka AspectJ z klasami Javy jest wygodne i bezproblemowe. Teoretycznie jest to rzecz oczywista ze względu na to, że AspectJ jedynie rozszerza platformę Java, jednak dobrze było się o tym przekonać w praktyce. Powyższe implikuje także, że integracja programowania aspektowego z wszelkimi bibliotekami dla Javy, np. Guicem, jest możliwa i, co niewątpliwie należy uznać za wielki sukces AspectJ, niesamowicie wygodna.
+
+Przy wykorzystaniu paradygmatu aspektowego należy bardzo uważać na wykonywane operacje oraz treść i funkcje samych rad. Programowanie tego typu jest narzędziem potężnym i, jak to zwykle bywa z tego typu rozwiązaniami, źle wykorzystane może przynieść zarówno dużo dobrego jak i złego. Ukrywanie logiki, dynamiczne podmienianie kodu, pomijanie wywołań funkcji może w niektórych przypadkach być pomocne, jednak używane zbyt często wprowadza chaos i generuje trudne do wykrycia oraz rozwiązania problemy.
+
+Powyższy wniosek dodatkowo jest wzmacniany przez fakt, że wykorzystanie odpluskwiacza w przypadku użycia aspektów jest mocno utrudnione i ograniczone. Aspekty pozostają w ogóle poza zasięgiem działania tego pożytecznego programu. Klasy, które są tkane w czasie ładowania uzyskają mnóstwo ``dodatkowych'' cech takich jak prywatne pola statyczne czy metody syntetyczne wykorzystywane przez implementację AspectJ. Wszystko to potrafi skutecznie utrudnić proces poszukiwania błędów.
+
+Podczas wykonywania projektu po raz kolejny uświadomiliśmy sobie jak ważne są wymagania nakładane na projekt. W naszym przypadku nie były one w żaden sposób ścisłe. Możemy powiedzieć, że doceniliśmy (choć na bardzo małą skalę) wagę metody tworzenia oprogramowania polegającej na tworzeniu szybkich, porzucanych prototypów w celu poszukiwania odpowiedniego zbioru wymagań.
+
 \end{document}

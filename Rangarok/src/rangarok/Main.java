@@ -17,7 +17,8 @@ public class Main {
 		Main m = new Main();
 
 		//Get test
-		writeCaption("get test"); b.testFieldsFromSubclass();
+		writeCaption("get test");
+		b.testFieldsFromSubclass();
 		System.out.println(m.test_field_list.size());
 		try {
 			System.out.println(m.test_field_date);
