@@ -140,6 +140,21 @@ Pewien fragment funkcjonalności ostatecznego produktu, który powstał w ramach
    %uproszczenie wykjorzsytania interfejsu - jeden plik konfiguracyjny
    %może coś jeszcze
 \section[Problemy]{Ważniejsze problemy pojawiające się w czasie wykonania projektu}
+  Podczas realizacji projektu napotkaliśmy wiele problemów, różnych w swej naturze i wadze.
+
+    Jeden z początkowych planów realizacji dotyczył śledzenia wykonania aplikacji ze szczególnym naciskiem na interfejsy graficzne i aplikacje \textit{event-driven}. Pierwotnie realizacja miała być na tyle ogólna, by wykorzystana mogła być do wszelkich tego typu programów i frameworków, jednakże po bardziej dogłębnym przemyśleniu sprawy zmuszeni byliśmy odrzucić to założenie, z uwagi na trudność (bądź wręcz niemożność) wyspecyfikowania interfejsu reprezentującego taką aplikację/bibliotekę na tyle precyzyjnego, by umożliwiał wymagany do realizacji planowanej funkcjonalności stopień interakcji, a zarazem wystarczająco ogólnego, by adekwatnie opisać był w stanie choćby znaczącą część frameworków docelowych (np. Swing + interfejs webowy).
+
+    Próba stworzenia dynamicznie sterowanej wizualizacji zdarzeń dla Swinga rozbiła się z kolei o problemy czysto techniczne. Dostarczenie wymaganej funkcjonalności wymagało modyfikacji klas samego Swinga. Jedną z możliwości było stworzenie i udostępnienie odpowiednio zmodyfikowanej offline dystrybucji JDK. To jednak zdaje się być rozwiązaniem zupełnie niepraktycznym. Konieczność użycia zmodyfikowanego JDK mogłoby wzbudzić obawy o bezpieczeństwo u potencjalnych użytkowników, ponadto zaś mogłyby powstać wątpliwości natury prawnej -- licencja JDK 1.6 mówi:
+
+\begin{quote}
+You may not  create,  modify,  or
+change the behavior of (...) classes,  interfaces, or  subpackages  that
+are in any  way  identified  as  \texttt{java},  \texttt{javax},  \texttt{sun}  or  similar
+convention (...)
+\end{quote}
+
+Alternatywą było wykonanie koniecznych modyfikacji w czasie ładowania. To jednak wymaga tkania bytecode'u klas z pakietów \texttt{java.*} i \texttt{javax.*}, które to AspectJ domyślnie pomija. Przebieg i rezultaty naszych zmagań sugerują, że są po temu dobre powody. Od samego początku na naszej drodze piętrzyły się przeszkody techniczne, których ominięcie prowadziło do coraz to bardziej złożonych i niepraktycznych rozwiązań. By zmusić weavera do przetworzenia potrzebnych nam klas próbowaliśmy stworzyć własnego classloadera, który w pewnych przypadkach odstępuje od standardowego modelu delegacji. Jakkolwiek osiągnęliśmy częściowy sukces, kolejne zagadkowe wyjątki zmusiły nas do kapitulacji i szukania innych, bardziej realistycznych celów.
+
 %javax, java + classloadery
 %heterogeniczne interfejsy event-driven - np. guje
 %bezpieczeństwo preparowanych swingów (jre) + legalność
